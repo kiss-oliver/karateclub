@@ -7,15 +7,14 @@ class spine(Estimator):
     from the paper "SPINE: Structural Identity Preserved Inductive Network Embedding".
 
     Args:
-        sample_number (int): Number of evaluation points. Default is 200.
-        step_size (float): Grid point step size. Default is 0.1.
-        heat_coefficient (float): Heat kernel coefficient. Default is 1.0.
-        approximation (int): Chebyshev polynomial order. Default is 100.
-        mechanism (str): Wavelet calculation method 'exact' or 'approximate'. Default is 'approximate'.
-        switch (int): Vertex cardinality when the wavelet calculation method switches to approximation. Default is 1000.
+        random_walk_number (int): Number of truncated random walks. Default is XXXXX.
+        random_walk_length (int): Length of truncated random walks. Default is XXXXXX.
+        beta (float): Probability of walking to a neighbor rather than jumping back to origin in RPR generation. Default is XXXXXX.
     """
-    def __init__(self):
-
+    def __init__(self, random_walk_number, random_walk_length, beta):
+        self.random_walk_number = random_walk_number
+        self.random_walk_length = random_walk_length
+        self.beta = beta
         pass
 
 
