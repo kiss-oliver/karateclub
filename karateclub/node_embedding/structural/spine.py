@@ -19,13 +19,27 @@ class spine(Estimator):
         pass
 
 
-    def fit(self, graph):
+    def _get_rooted_page_rank_matrix(self, graph):
+        r"""Generating a rooted page rank matrix
+
+        Arg types:
+            * **graph** *(NetworkX graph)* - The graph for which the rooted page rank matrix is generated.    
+
+        Return types:
+            * **rpr_matrix** *(Numpy array)* - The rooted page rank matrix.    
         """
+        rpr_matrix = None
+        return rpr_matrix
+
+
+    def fit(self, graph):
+        r"""
         Fitting a SPINE model.
 
         Arg types:
             * **graph** *(NetworkX graph)* - The graph to be embedded.
         """
+        self._get_rooted_page_rank_matrix(graph)
         pass
 
     def get_embedding(self):
