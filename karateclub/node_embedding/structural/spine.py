@@ -1,6 +1,7 @@
 import numpy as np
 import networkx as nx
 import random
+from collections import Counter
 from karateclub.estimator import Estimator
 
 class spine(Estimator):
@@ -11,11 +12,13 @@ class spine(Estimator):
         random_walk_number (int): Number of truncated random walks. Default is XXXXX.
         random_walk_length (int): Length of truncated random walks. Default is XXXXXX.
         beta (float): Probability of walking to a neighbor rather than jumping back to origin in RPR generation. Default is XXXXXX.
+        k (int): Length of structural feature vector. Default is XXXXXXXXX.
     """
-    def __init__(self, random_walk_number, random_walk_length, beta):
+    def __init__(self, random_walk_number, random_walk_length, beta, k):
         self.random_walk_number = random_walk_number
         self.random_walk_length = random_walk_length
         self.beta = beta
+        self.k = k
 
     def _generate_single_truncated_random_walk(self, graph, source_node):
         r"""Generates a single truncated random walk given a graph and a source node.
@@ -57,8 +60,24 @@ class spine(Estimator):
         Return types:
             * **rpr_matrix** *(Numpy array)* - The rooted page rank matrix.    
         """
-        rpr_matrix = None
-        return rpr_matrix
+        counts = {}
+        for node in graph.nodes():
+            counts[node] = Counter()
+        for truncated_random_walk in self._generate_truncated_random_walks(graph):
+            counts[truncated_random_walk[0]].update(truncated_random_walk)
+        
+        rpr_matrix = []
+        rpr_target_nodes = []
+        for node in graph.nodes():
+            k_most_common = counts[node].most_common(self.k)
+            discrepancy = int(len(k_most_common)<self.k)*(self.k-len(k_most_common)) 
+            k_most_common_node_id = [x[0] for x in k_most_common] + [node for _ in range(discrepancy)]
+            k_most_common_node_frequency = [x[1] for x in k_most_common] + [0 for _ in range(discrepancy)]
+            k_most_common_node_frequency = [x/sum(k_most_common_node_frequency) for x in k_most_common_node_frequency]
+            rpr_matrix.append(k_most_common_node_frequency)
+            rpr_target_nodes.append(k_most_common_node_id)
+            
+        return rpr_matrix, rpr_target_nodes
 
 
     def fit(self, graph):
