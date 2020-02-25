@@ -2,6 +2,7 @@ import numpy as np
 import networkx as nx
 import random
 from collections import Counter
+from fastdtw import fastdtw
 from karateclub.estimator import Estimator
 
 class spine(Estimator):
@@ -115,6 +116,7 @@ class spine(Estimator):
     def _select_potentially_similar_vertices(self, node, vertices_with_degree_n, degrees):
         degree = degrees[node]
         sample_size = 2*np.log2(len(degrees))
+        print(sample_size)
         selected_nodes = []
         try:
             for iter_node in vertices_with_degree_n[degree]["vertices"]:
@@ -149,33 +151,42 @@ class spine(Estimator):
                             selected_nodes.append(iter_node)
                             if len(selected_nodes)>=sample_size:
                                 raise StopIteration
-                            if "previous" in vertices_with_degree_n[previous_degree]:
-                                previous_degree = vertices_with_degree_n[previous_degree]["previous"]
-                            else:
-                                previous_degree = None
+                        if "previous" in vertices_with_degree_n[previous_degree]:
+                            previous_degree = vertices_with_degree_n[previous_degree]["previous"]
+                        else:
+                            previous_degree = None
                     else:
                         for iter_node in vertices_with_degree_n[next_degree]["vertices"]:
                             selected_nodes.append(iter_node)
                             if len(selected_nodes)>=sample_size:
                                 raise StopIteration
-                            if "next" in vertices_with_degree_n[next_degree]:
-                                next_degree = vertices_with_degree_n[next_degree]["next"]
-                            else:
-                                next_degree = None
+                        if "next" in vertices_with_degree_n[next_degree]:
+                            next_degree = vertices_with_degree_n[next_degree]["next"]
+                        else:
+                            next_degree = None
         except StopIteration:
             return selected_nodes
 
         return selected_nodes
 
+    def _cost(self,a,b):
+        eps = 10e-10
+        ma = max(a,b) + eps
+        mi = min(a,b) + eps
+        return ((ma/mi) - 1)
 
-    def biased_positive_sampler(self, rpr_matrix, random_walks, vertices_with_degree_n, degrees):
+    def _biased_positive_sampler(self, rpr_matrix, random_walks, vertices_with_degree_n, degrees):
         positive_sample = []
-        for node in range(rpr_matrix):
+        for node in range(len(rpr_matrix)):
             if random.random()>=self.structural_rate:
                 sampled_node = random.choice(list(set([x for y in random_walks[node] for x in y])))
                 positive_sample.append(rpr_matrix[sampled_node])
             else:
                 selected_vertices = self._select_potentially_similar_vertices(node, vertices_with_degree_n, degrees)
+                similarities = []
+                for vertex in selected_vertices:
+                    similarities.append(fastdtw(rpr_matrix[node],rpr_matrix[vertex],radius=1,dist=self._cost))
+                positive_sample = similarities
         return positive_sample        
             
 
@@ -188,9 +199,9 @@ class spine(Estimator):
         """
         random_walks = self._random_walker(graph)
         rpr_matrix, rpr_target_nodes = self._get_rooted_page_rank_matrix(graph)
-        print(rpr_matrix)
         vertices_with_degree_n, degrees = self._get_degrees(graph)
-
+        positive_sample = self._biased_positive_sampler(rpr_matrix, random_walks, vertices_with_degree_n, degrees)
+        print(positive_sample)
 
 
     def get_embedding(self):
