@@ -79,6 +79,24 @@ class spine(Estimator):
             
         return rpr_matrix, rpr_target_nodes
 
+    def _get_degrees(self,graph):
+        """
+        """
+        degree_view = graph.degree()
+        degrees = [degree for node, degree in degree_view]
+        vertices_with_degree_n = {degree:{"vertices":[]} for degree in list(set(degrees))}
+        for node, degree in degree_view:
+            vertices_with_degree_n[degree]["vertices"].append(node)
+        sorted_degrees = list(set(degrees))
+        sorted_degrees.sort()
+        different_degrees = len(sorted_degrees)
+        for i in range(different_degrees):
+            if i>0:
+                vertices_with_degree_n[sorted_degrees[i]]["previous"] = sorted_degrees[i-1]
+            if i<different_degrees-1:
+                vertices_with_degree_n[sorted_degrees[i]]["next"] = sorted_degrees[i+1]
+        return vertices_with_degree_n, degrees
+            
 
     def fit(self, graph):
         r"""
@@ -87,7 +105,8 @@ class spine(Estimator):
         Arg types:
             * **graph** *(NetworkX graph)* - The graph to be embedded.
         """
-        pass
+        rpr_matrix, rpr_target_nodes = self._get_rooted_page_rank_matrix(graph)
+        vertices_with_degree_n, degrees = self._get_degrees(graph)
 
     def get_embedding(self):
         r"""Getting the node embedding.
