@@ -96,13 +96,13 @@ class spine(Estimator):
                 vertices_with_degree_n[sorted_degrees[i]]["next"] = sorted_degrees[i+1]
         return vertices_with_degree_n, degrees
 
-    def _generate_single_random_walk(graph, node_id):
+    def _generate_single_random_walk(self, graph, source_node):
         random_walk = [source_node]        
         for previous_node_index in range(self.random_walk_length-1):
             random_walk.append(random.choice(list(graph[random_walk[previous_node_index]].keys())))
         return random_walk
 
-    def _random_walker(graph):
+    def _random_walker(self, graph):
         walks = {}
         for node_i in graph.nodes():
             walks[node_i]=[]
@@ -122,7 +122,7 @@ class spine(Estimator):
         random_walks = self._random_walker(graph)
         rpr_matrix, rpr_target_nodes = self._get_rooted_page_rank_matrix(graph)
         vertices_with_degree_n, degrees = self._get_degrees(graph)
-        
+
 
     def get_embedding(self):
         r"""Getting the node embedding.
