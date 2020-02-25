@@ -44,7 +44,6 @@ class spine(Estimator):
         Arg types:
             * **graph** *(NetworkX graph)* - The graph for which the rooted page rank matrix is generated.  
         """
-        print(graph)
         for _ in range(self.random_walk_number):
             for node_i in graph.nodes():
                 truncated_random_walk = self._generate_single_truncated_random_walk(graph, node_i)
@@ -96,6 +95,21 @@ class spine(Estimator):
             if i<different_degrees-1:
                 vertices_with_degree_n[sorted_degrees[i]]["next"] = sorted_degrees[i+1]
         return vertices_with_degree_n, degrees
+
+    def _generate_single_random_walk(graph, node_id):
+        random_walk = [source_node]        
+        for previous_node_index in range(self.random_walk_length-1):
+            random_walk.append(random.choice(list(graph[random_walk[previous_node_index]].keys())))
+        return random_walk
+
+    def _random_walker(graph):
+        walks = {}
+        for node_i in graph.nodes():
+            walks[node_i]=[]
+            for _ in range(self.random_walk_number):
+                walk = self._generate_single_random_walk(graph, node_i)
+                walks[node_i].append(walk)
+        return walks
             
 
     def fit(self, graph):
@@ -105,8 +119,10 @@ class spine(Estimator):
         Arg types:
             * **graph** *(NetworkX graph)* - The graph to be embedded.
         """
+        random_walks = self._random_walker(graph)
         rpr_matrix, rpr_target_nodes = self._get_rooted_page_rank_matrix(graph)
         vertices_with_degree_n, degrees = self._get_degrees(graph)
+        
 
     def get_embedding(self):
         r"""Getting the node embedding.
