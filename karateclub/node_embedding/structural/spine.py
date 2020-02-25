@@ -14,11 +14,12 @@ class spine(Estimator):
         beta (float): Probability of walking to a neighbor rather than jumping back to origin in RPR generation. Default is XXXXXX.
         k (int): Length of structural feature vector. Default is XXXXXXXXX.
     """
-    def __init__(self, random_walk_number, random_walk_length, beta, k):
+    def __init__(self, random_walk_number, random_walk_length, beta, k, structural_rate):
         self.random_walk_number = random_walk_number
         self.random_walk_length = random_walk_length
         self.beta = beta
         self.k = k
+        self.structural_rate = structural_rate
 
     def _generate_single_truncated_random_walk(self, graph, source_node):
         r"""Generates a single truncated random walk given a graph and a source node.
@@ -110,6 +111,72 @@ class spine(Estimator):
                 walk = self._generate_single_random_walk(graph, node_i)
                 walks[node_i].append(walk)
         return walks
+
+    def _select_potentially_similar_vertices(self, node, vertices_with_degree_n, degrees):
+        degree = degrees[node]
+        sample_size = 2*np.log2(len(degrees))
+        selected_nodes = []
+        try:
+            for iter_node in vertices_with_degree_n[degree]["vertices"]:
+                if iter_node != node:
+                    selected_nodes.append(iter_node)
+                if len(selected_nodes)>=sample_size:
+                    raise StopIteration
+            if "next" in vertices_with_degree_n[degree]:
+                next_degree = vertices_with_degree_n[degree]["next"]
+            else: 
+                next_degree = None
+            if "previous" in vertices_with_degree_n[degree]:
+                previous_degree = vertices_with_degree_n[degree]["previous"]
+            else:
+                previous_degree = None
+            while True:
+                if next_degree==None:
+                    for iter_node in vertices_with_degree_n[previous_degree]["vertices"]:
+                        selected_nodes.append(iter_node)
+                        if len(selected_nodes)>=sample_size:
+                            raise StopIteration
+                        previous_degree = vertices_with_degree_n[previous_degree]["previous"]
+                elif previous_degree==None:
+                     for iter_node in vertices_with_degree_n[next_degree]["vertices"]:
+                        selected_nodes.append(iter_node)
+                        if len(selected_nodes)>=sample_size:
+                            raise StopIteration
+                        next_degree = vertices_with_degree_n[next_degree]["next"]
+                else:
+                    if abs(degree-previous_degree) < abs(degree-next_degree):
+                        for iter_node in vertices_with_degree_n[previous_degree]["vertices"]:
+                            selected_nodes.append(iter_node)
+                            if len(selected_nodes)>=sample_size:
+                                raise StopIteration
+                            if "previous" in vertices_with_degree_n[previous_degree]:
+                                previous_degree = vertices_with_degree_n[previous_degree]["previous"]
+                            else:
+                                previous_degree = None
+                    else:
+                        for iter_node in vertices_with_degree_n[next_degree]["vertices"]:
+                            selected_nodes.append(iter_node)
+                            if len(selected_nodes)>=sample_size:
+                                raise StopIteration
+                            if "next" in vertices_with_degree_n[next_degree]:
+                                next_degree = vertices_with_degree_n[next_degree]["next"]
+                            else:
+                                next_degree = None
+        except StopIteration:
+            return selected_nodes
+
+        return selected_nodes
+
+
+    def biased_positive_sampler(self, rpr_matrix, random_walks, vertices_with_degree_n, degrees):
+        positive_sample = []
+        for node in range(rpr_matrix):
+            if random.random()>=self.structural_rate:
+                sampled_node = random.choice(list(set([x for y in random_walks[node] for x in y])))
+                positive_sample.append(rpr_matrix[sampled_node])
+            else:
+                selected_vertices = self._select_potentially_similar_vertices(node, vertices_with_degree_n, degrees)
+        return positive_sample        
             
 
     def fit(self, graph):
@@ -121,7 +188,9 @@ class spine(Estimator):
         """
         random_walks = self._random_walker(graph)
         rpr_matrix, rpr_target_nodes = self._get_rooted_page_rank_matrix(graph)
+        print(rpr_matrix)
         vertices_with_degree_n, degrees = self._get_degrees(graph)
+
 
 
     def get_embedding(self):
