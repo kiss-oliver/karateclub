@@ -27,10 +27,18 @@ Overlapping community detection
     :members:
     :undoc-members:
 
+.. automodule:: karateclub.community_detection.overlapping.symmnmf
+    :members:
+    :undoc-members:
+
 Non-overlapping community detection
 --------------------
 
 .. automodule:: karateclub.community_detection.non_overlapping.edmot
+    :members:
+    :undoc-members:
+
+.. automodule:: karateclub.community_detection.non_overlapping.scd
     :members:
     :undoc-members:
 
@@ -76,8 +84,20 @@ Structural node embedding
     :members:
     :undoc-members:
 
+.. automodule:: karateclub.node_embedding.structural.role2vec
+    :members:
+    :undoc-members:
+
 Attributed node embedding
 --------------------
+
+.. automodule:: karateclub.node_embedding.attributed.musae
+    :members:
+    :undoc-members:
+
+.. automodule:: karateclub.node_embedding.attributed.sine
+    :members:
+    :undoc-members:
 
 .. automodule:: karateclub.node_embedding.attributed.bane
     :members:

@@ -70,9 +70,13 @@ In detail, the following community detection and embedding methods were implemen
 
 * **[BigClam](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.community_detection.overlapping.bigclam.BigClam)** from Yang and Leskovec: [Overlapping Community Detection at Scale:A Nonnegative Matrix Factorization Approach](http://infolab.stanford.edu/~crucis/pubs/paper-nmfagm.pdf) (WSDM 2013)
 
+* **[SymmNMF](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.community_detection.overlapping.symmnmf.SymmNMF)** from Kuang *et al.*: [Symmetric Nonnegative Matrix Factorization for Graph Clustering](https://www.cc.gatech.edu/~hpark/papers/DaDingParkSDM12.pdf) (SDM 2012)
+
 **Non-Overlapping Community Detection**
 
 * **[EdMot](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.community_detection.non_overlapping.edmot.EdMot)** from Li *et al.*: [EdMot: An Edge Enhancement Approach for Motif-aware Community Detection](https://arxiv.org/abs/1906.04560) (KDD 2019)
+
+* **[SCD](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.community_detection.non_overlapping.scd.SCD)** from Prat-Perez *et al.*: [High Quality, Scalable and Parallel Community Detectionfor Large Real Graphs](http://wwwconference.org/proceedings/www2014/proceedings/p225.pdf) (WWW 2014)
 
 * **[Label Propagation](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.community_detection.non_overlapping.label_propagation.LabelPropagation)** from Raghavan *et al.*: [Near Linear Time Algorithm to Detect Community Structures in Large-Scale Networks](https://arxiv.org/abs/0709.2938) (Physics Review E 2007)
 
@@ -96,15 +100,21 @@ In detail, the following community detection and embedding methods were implemen
 
 * **[GraphWave](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.node_embedding.structural.graphwave.GraphWave)** from Donnat *et al.*: [Learning Structural Node Embeddings via Diffusion Wavelets](https://arxiv.org/abs/1710.10321) (KDD 2018)
 
+* **[Role2Vec](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.node_embedding.structural.role2vec.Role2vec)** from Ahmed *et al.*: [Learning Role-based Graph Embeddings](https://arxiv.org/abs/1802.02896) (IJCAI StarAI 2018)
+
 **Attributed Node Level Embedding**
+
+* **[MUSAE](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.node_embedding.attributed.musae.MUSAE)** from Rozemberczki *et al.*: [Multi-Scale Attributed Node Embedding](https://arxiv.org/abs/1909.13021) (Arxiv 2019)
+
+* **[FSCNMF](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.node_embedding.attributed.fscnmf.FSCNMF)** from Bandyopadhyay *et al.*: [Fusing Structure and Content via Non-negative Matrix Factorization for Embedding Information Networks](https://arxiv.org/pdf/1804.05313.pdf) (ArXiV 2018)
+
+* **[SINE](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.node_embedding.attributed.sine.SINE)** from Zhang *et al.*: [SINE: Scalable Incomplete Network Embedding](https://arxiv.org/pdf/1810.06768.pdf) (ICDM 2018)
 
 * **[BANE](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.node_embedding.attributed.bane.BANE)** from Yang *et al.*: [Binarized Attributed Network Embedding](https://ieeexplore.ieee.org/document/8626170) (ICDM 2018)
 
 * **[TENE](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.node_embedding.attributed.tene.TENE)** from Yang *et al.*: [Enhanced Network Embedding with Text Information](https://ieeexplore.ieee.org/document/8545577) (ICPR 2018)
 
 * **[TADW](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.node_embedding.attributed.tadw.TADW)** from Yang *et al.*: [Network Representation Learning with Rich Text Information](https://www.ijcai.org/Proceedings/15/Papers/299.pdf) (IJCAI 2015)
-
-* **[FSCNMF](https://karateclub.readthedocs.io/en/latest/modules/root.html#karateclub.node_embedding.attributed.fscnmf.FSCNMF)** from Bandyopadhyay *et al.*: [Fusing Structure and Content via Non-negative Matrix Factorization for Embedding Information Networks](https://arxiv.org/pdf/1804.05313.pdf) (ArXiV 2018)
 
 **Graph Level Embedding**
 

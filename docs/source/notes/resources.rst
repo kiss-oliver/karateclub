@@ -14,10 +14,14 @@ Overlapping community detection
 
 * Jaewon Yang and Jure Leskovec: **Overlapping Community Detection at Scale: A Nonnegative Matrix Factorization Approach** `Paper <http://infolab.stanford.edu/~crucis/pubs/paper-nmfagm.pdf>`_, `Slides <http://snap.stanford.edu/class/cs224w-2017/slides/18-overlapping.pdf>`_, `Video <https://www.youtube.com/watch?v=Y78Kugdq24I>`_, `Video <https://www.youtube.com/watch?v=cuDDBfvK71g>`_
 
+* Da Kuang, Chris Ding, Haesun Park: **Symmetric Nonnegative Matrix Factorization for Graph Clustering** `Paper <https://www.cc.gatech.edu/~hpark/papers/DaDingParkSDM12.pdf>`_
+
 Non-overlapping community detection
 --------------------
 
 * Pei-Zhen Li, Ling Huang, Chang-Dong Wang, and Jian-Huang Lai: **EdMot: An Edge Enhancement Approach for Motif-aware Community Detection** `Paper <https://arxiv.org/abs/1906.04560>`_, `Video <https://www.youtube.com/watch?v=6fEGMHJSsq0>`_, `Code <https://github.com/benedekrozemberczki/EdMot>`_
+
+* Arnau Prat-Perez, David Dominguez-Sal, Joseph-Luis Larriba-Pey: **High Quality, Scalable and Parallel Community Detectionfor Large Real Graphs** `Paper <http://wwwconference.org/proceedings/www2014/proceedings/p225.pdf>`_
 
 * Usha Nandini Raghavan, Reka Albert, Soundar Kumara: **Near Linear Time Algorithm to Detect Community Structures in Large-Scale Networks** `Paper <https://arxiv.org/abs/0709.2938>`_, `Code <https://github.com/benedekrozemberczki/LabelPropagation>`_
 
@@ -43,9 +47,14 @@ Structural node embedding
 
 * Claire Donnat, Marinka Zitnik, David Hallac, Jure Leskovec: **Learning Structural Node Embeddings Via Diffusion Wavelets** `Paper <https://arxiv.org/abs/1710.10321>`_, `Video <https://www.youtube.com/watch?v=S4QZiUPJkRI>`_, `Code <https://github.com/benedekrozemberczki/GraphWaveMachine>`_
 
+* Nesreen K. Ahmed, Ryan Rossi, John Boaz Lee, Theodore L. Willke, Rong Zhou, Xiangnan Kong, Hoda Eldardiry: **Learning Role-based Graph Embeddings** `Paper <https://arxiv.org/abs/1802.02896>`_, `Code <https://github.com/benedekrozemberczki/Role2Vec>`_
 
 Attributed node embedding
 --------------------
+
+* Benedek Rozemberczki, Carl Allen, Rik Sarkar: **Multi-Scale Attributed Node Embedding** `Paper <https://arxiv.org/abs/1909.13021>`_, `Code <https://github.com/benedekrozemberczki/MUSAE>`_
+
+* Daokun Zhang, Jie Yin, Xingquan Zhu, Chengqi Zhang: **SINE: Scalable Incomplete Network Embedding** `Paper <https://arxiv.org/pdf/1810.06768.pdf>`_, `Code <https://github.com/benedekrozemberczki/SINE>`_
 
 * Hong Yang, Shirui Pan, Peng Zhang, Ling Chen, Defu Lian, Chengqi Zhang: **Binarized Attributed Network Embedding** `Paper <https://ieeexplore.ieee.org/document/8626170>`_, `Code <https://github.com/benedekrozemberczki/BANE>`_
 

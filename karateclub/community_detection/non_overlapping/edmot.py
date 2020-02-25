@@ -10,9 +10,9 @@ class EdMot(Estimator):
 
     Args:
         component_count (int): Number of extracted motif hypergraph components. Default is 2.
-        cutoff (int): Motif edge cut-off value. Default is 10.
+        cutoff (int): Motif edge cut-off value. Default is 50.
     """
-    def __init__(self, component_count=2, cutoff=10):
+    def __init__(self, component_count=2, cutoff=50):
         self.component_count = component_count
         self.cutoff = cutoff
 
@@ -42,17 +42,19 @@ class EdMot(Estimator):
         """
         Extracting connected components from motif graph.
         """
-        components = [c for c in sorted(nx.connected_components(self.motif_graph), key=len, reverse=True)]
-        important_components = components[:self.component_count]
-        self.blocks = [list(nodes) for nodes in important_components]
+        components = [c for c in nx.connected_components(self.motif_graph)]
+        components = [[len(c), c] for c in components]
+        components.sort(key=lambda x: x[0], reverse=True)
+        important_components = [components[comp][1] for comp
+                                in range(self.component_count if len(components)>=self.component_count else len(components))]
+        self.blocks = [list(graph) for graph in important_components]
 
     def _fill_blocks(self):
         """
         Filling the dense blocks of the adjacency matrix.
         """
-        new_edges = [(n_1, n_2) for nodes in self.blocks for n_1 in nodes for n_2 in nodes]
-        new_graph = nx.from_edgelist(new_edges)
-        self.graph = nx.disjoint_union(self.graph, new_graph)
+        new_edges = [(n_1, n_2) for nodes in self.blocks for n_1 in nodes for n_2 in nodes if n_1!= n_2]
+        self.graph.add_edges_from(new_edges)  
 
     def fit(self, graph):
         """
@@ -65,7 +67,7 @@ class EdMot(Estimator):
         self._calculate_motifs()
         self._extract_components()
         self._fill_blocks()
-        self.partition = community.best_partition(self.graph)
+        self.partition = community.best_partition(self.graph, randomize=True)
 
     def get_memberships(self):
         r"""Getting the cluster membership of nodes.

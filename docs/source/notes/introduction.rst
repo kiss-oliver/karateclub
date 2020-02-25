@@ -1,6 +1,31 @@
 Introduction by example
 =======================
 
+*Karate Club* is an unsupervised machine learning extension library for `NetworkX <https://networkx.github.io/>`_.
+
+
+*Karate Club* consists of state-of-the-art methods to do unsupervised learning on graph structured data. To put it simply it is a Swiss Army knife for small-scale graph mining research. First, it provides network embedding techniques at the node and graph level. Second, it includes a variety of overlapping and non-overlapping community detection methods. Implemented methods cover a wide range of network science (`NetSci <https://netscisociety.net/home>`_, `CompleNet <https://complenet.weebly.com/>`_, data mining `ICDM <http://icdm2019.bigke.org/>`_, `CIKM <http://www.cikm2019.net/>`_, `KDD <https://www.kdd.org/kdd2020/>`_, artificial intelligence (`AAAI <http://www.aaai.org/Conferences/conferences.php>`_, `IJCAI <https://www.ijcai.org/>`_) and machine learning (`NeurIPS <https://nips.cc/>`_, `ICML <https://icml.cc/>`_, `ICLR <https://iclr.cc/>`_) conferences, workshops, and pieces from prominent journals.  
+
+--------------------------------------------------------------------------------
+
+**Citing**
+
+If you find *Karate Club* useful in your research, please consider citing the following paper:
+
+.. code-block:: latex
+
+   >@misc{rozemberczki2020karateclub,
+       title = {Karate Club: An open-source Python framework for unsupervised learning on graphs},
+       author = {Benedek Rozemberczki and Rik Sarkar},
+       year = {2020},
+       publisher = {GitHub},
+       journal = {GitHub repository},
+       howpublished = {\url{https://github.com/benedekrozemberczki/karateclub}}}
+
+Overview
+=======================
+--------------------------------------------------------------------------------
+
 We shortly overview the fundamental concepts and features of Karate Club through simple examples. These are the following:
 
 .. contents::
@@ -22,11 +47,12 @@ The returned community membership dictionaries and embedding matrices use the sa
 API driven design
 -----------------
 
-Karate Club uses the desing principles of Scikit-Learn which means that the algorithms in the package share the same API. Each machine learning model
+Karate Club uses the design principles of Scikit-Learn which means that the algorithms in the package share the same API. Each machine learning model
 is implemented as a class which inherits from ``Estimator``. The constructors of the models are used to set the hyperparameters. The models have
-default hyperparameters that work well out of the box. This means that non expert users do not have to make decisions about these in advance and only a little fine tuning is required. For each class the ``fit`` method provided learns the embedding or clustering of nodes/graphs in the ``NetworkX`` graph. This method takes the data used for learng the embedding or clustering. Models provide the additional public methods ``get_embedding``, ``get_memberships``, ``get_cluster_centers``. This API driven design means that one can create a ``DeepWalk`` embedding of a Watts-Strogatz graph just like this.
+default hyperparameters that work well out of the box. This means that non expert users do not have to make decisions about these in advance and only a little fine tuning is required. For each class the ``fit`` method provided learns the embedding or clustering of nodes/graphs in the ``NetworkX`` graph. This method takes the data used for learn the embedding or clustering. Models provide the additional public methods ``get_embedding``, ``get_memberships``, ``get_cluster_centers``. This API driven design means that one can create a ``DeepWalk`` embedding of a Watts-Strogatz graph just like this.
 
 .. code-block:: python
+
     import networkx as nx
     from karateclub import DeepWalk
     
@@ -36,9 +62,10 @@ default hyperparameters that work well out of the box. This means that non exper
     model.fit(g)
     embedding = model.get_embedding()
 
-Which can be modified to create a ``Walklets`` embedding with minimal effort like this.
+This can be modified to create a ``Walklets`` embedding with minimal effort like this.
 
 .. code-block:: python
+
     import networkx as nx
     from karateclub.node_embedding.neighbourhood import Walklets
     
@@ -73,7 +100,7 @@ page category vector. These are returned as a ``NetworkX`` graph and ``numpy`` a
     graph = reader.get_graph()
     target = reader.get_target()
 
-The constructor defines the graphreader object while the methods ``get_graph`` and ``get_target`` read the data.
+The constructor defines the graph reader object while the methods ``get_graph`` and ``get_target`` read the data.
 
 Now let's use the ``Label Propagation`` community detection method from `Near Linear Time Algorithm to Detect Community Structures in Large-Scale Networks <https://arxiv.org/abs/0709.2938>`_. 
 
@@ -216,7 +243,7 @@ and the target variable with Scikit-Learn. We will use a test data ratio of 20%.
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-Using the training data (``X_train`` and ``y_train``) we learn a logistic regression model to predict the probability of a thread being discussion based. We perform inferencet on the test 
+Using the training data (``X_train`` and ``y_train``) we learn a logistic regression model to predict the probability of a thread being discussion based. We perform inference on the test 
 set for this target. Finally, we evaluate the model performance by printing an area under the ROC curve value.
 
 .. code-block:: python

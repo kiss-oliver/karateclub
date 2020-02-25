@@ -48,7 +48,7 @@ class GraphWave(Estimator):
 
     def _single_wavelet_generator(self, node):
         """
-        Calculating the characteristic function for a given node, using the eigendecomposition.
+        Calculating the characteristic function for a given node, using the eigen decomposition.
         
         Arg types:
             * **node** *(int)* - The node being embedded.
@@ -118,6 +118,7 @@ class GraphWave(Estimator):
         Arg types:
             * **graph** *(NetworkX graph)* - The graph to be embedded.
         """
+        graph.remove_edges_from(nx.selfloop_edges(graph))
         self._create_evaluation_points()
         self._check_size(graph)
         self.G = pygsp.graphs.Graph(nx.adjacency_matrix(graph))

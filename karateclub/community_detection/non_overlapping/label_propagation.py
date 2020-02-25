@@ -5,12 +5,12 @@ from karateclub.estimator import Estimator
 class LabelPropagation(Estimator):
     r"""An implementation of `"Label Propagation Clustering" <https://arxiv.org/abs/0709.2938>`_
     from the Physical Review '07 paper "Near Linear Time Algorithm to Detect Community Structures
-    in Large-Scale Networks". The tool executes a series of label propagations wiht unique labels.
+    in Large-Scale Networks". The tool executes a series of label propagations with unique labels.
     The final labels are used as cluster memberships.
 
     Args:
         seed (int): Random seed. Default is 42.
-        rounds (int): Propagation iterations. Default is 100.
+        iterations (int): Propagation iterations. Default is 100.
     """
     def __init__(self, seed=42, iterations=100):
         self.seed = seed
@@ -21,7 +21,7 @@ class LabelPropagation(Estimator):
         Choosing a neighbor from a propagation source node.
 
         Arg types:
-            * **neigbors** *(list)* - Neighboring nodes.
+            * **neigbours** *(list)* - Neighbouring nodes.
         """
         scores = {}
         for neighbor in neighbors:

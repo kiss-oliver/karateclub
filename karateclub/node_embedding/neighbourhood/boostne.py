@@ -14,12 +14,12 @@ class BoostNE(Estimator):
     The base target matrix is a pooled sum of adjacency matrix powers. 
 
     Args:
-        dimensions (int): Number of individual embedding dimensions. Default is 4.
-        iterations (int): Number of boosting iterations. Default is 10.
-        order (int): Number of adjacency matrix powers. Default is 5.
+        dimensions (int): Number of individual embedding dimensions. Default is 8.
+        iterations (int): Number of boosting iterations. Default is 16.
+        order (int): Number of adjacency matrix powers. Default is 2.
         alpha (float): NMF regularization parameter. Default is 0.01.
     """
-    def __init__(self, dimensions=4, iterations=10, order=5, alpha=0.01):
+    def __init__(self, dimensions=8, iterations=16, order=2, alpha=0.01):
         self.dimensions = dimensions
         self.iterations = iterations
         self.order = order
@@ -46,7 +46,7 @@ class BoostNE(Estimator):
         Creating a tuple with the normalized adjacency matrix.
 
         Return types:
-            * **(A_hat, A_hat, A_hat)** *(Tuple of SciPy arrays)* - Normalized adjacencies.
+            * **(A_hat, A_hat, A_hat)** *(Tuple of SciPy arrays)* - Normalized adjacency matrices.
         """
         A = nx.adjacency_matrix(graph, nodelist=range(graph.number_of_nodes()))
         D_inverse = self._create_D_inverse(graph)
@@ -89,7 +89,7 @@ class BoostNE(Estimator):
 
     def _reweighting(self, X, chosen_row, chosen_col):
         """
-        Rescaling the target matrix with the anchor row and column.
+        Re-scaling the target matrix with the anchor row and column.
 
         Arg types:
             * **X** *(COO Scipy matrix)* - The target matrix.

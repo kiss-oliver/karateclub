@@ -22,7 +22,7 @@ class Graph2Vec(Estimator):
         workers (int): Number of cores. Default is 4.
         down_sampling (float): Down sampling frequency. Default is 0.0001.
         epochs (int): Number of epochs. Default is 10.
-        learning_rate (float): HogWild! learning rate. Deefault is 0.025.
+        learning_rate (float): HogWild! learning rate. Default is 0.025.
         min_count (int): Minimal count of graph feature occurences. Default is 5.
         seed (int): Random seed for the model. Default is 42.
     """
@@ -48,7 +48,7 @@ class Graph2Vec(Estimator):
             * **graphs** *(List of NetworkX graphs)* - The graphs to be embedded.
         """
         documents = [WeisfeilerLehmanHashing(graph, self.wl_iterations, self.attributed) for graph in graphs]
-        documents = [TaggedDocument(words=doc.extracted_features, tags=[str(i)]) for i, doc in enumerate(documents)]
+        documents = [TaggedDocument(words=doc.get_graph_features(), tags=[str(i)]) for i, doc in enumerate(documents)]
 
         model = Doc2Vec(documents,
                         vector_size=self.dimensions,
