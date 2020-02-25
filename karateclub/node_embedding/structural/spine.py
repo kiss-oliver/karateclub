@@ -185,8 +185,10 @@ class spine(Estimator):
                 selected_vertices = self._select_potentially_similar_vertices(node, vertices_with_degree_n, degrees)
                 similarities = []
                 for vertex in selected_vertices:
-                    similarities.append(fastdtw(rpr_matrix[node],rpr_matrix[vertex],radius=1,dist=self._cost))
-                positive_sample = similarities
+                    similarities.append(np.exp(-1.0*fastdtw(rpr_matrix[node],rpr_matrix[vertex],radius=1,dist=self._cost)[0]))
+                similarities_normalized = [x/sum(similarities) for x in similarities]
+                selected_node = np.random.choice(selected_vertices, p=similarities_normalized)
+                positive_sample.append(rpr_matrix[selected_node])
         return positive_sample        
             
 
@@ -201,7 +203,6 @@ class spine(Estimator):
         rpr_matrix, rpr_target_nodes = self._get_rooted_page_rank_matrix(graph)
         vertices_with_degree_n, degrees = self._get_degrees(graph)
         positive_sample = self._biased_positive_sampler(rpr_matrix, random_walks, vertices_with_degree_n, degrees)
-        print(positive_sample)
 
 
     def get_embedding(self):
