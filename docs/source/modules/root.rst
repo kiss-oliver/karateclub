@@ -34,6 +34,10 @@ Overlapping community detection
 Non-overlapping community detection
 --------------------
 
+.. automodule:: karateclub.community_detection.non_overlapping.gemsec
+    :members:
+    :undoc-members:
+
 .. automodule:: karateclub.community_detection.non_overlapping.edmot
     :members:
     :undoc-members:
@@ -50,6 +54,10 @@ Neighbourhood-based node embedding
 --------------------
 
 .. automodule:: karateclub.node_embedding.neighbourhood.diff2vec
+    :members:
+    :undoc-members:
+
+.. automodule:: karateclub.node_embedding.neighbourhood.nodesketch
     :members:
     :undoc-members:
 
@@ -73,7 +81,15 @@ Neighbourhood-based node embedding
     :members:
     :undoc-members:
 
+.. automodule:: karateclub.node_embedding.neighbourhood.node2vec
+    :members:
+    :undoc-members:
+
 .. automodule:: karateclub.node_embedding.neighbourhood.nmfadmm
+    :members:
+    :undoc-members:
+
+.. automodule:: karateclub.node_embedding.neighbourhood.laplacianeigenmaps
     :members:
     :undoc-members:
 
@@ -90,6 +106,10 @@ Structural node embedding
 
 Attributed node embedding
 --------------------
+
+.. automodule:: karateclub.node_embedding.attributed.feathernode
+    :members:
+    :undoc-members:
 
 .. automodule:: karateclub.node_embedding.attributed.musae
     :members:
@@ -115,10 +135,33 @@ Attributed node embedding
     :members:
     :undoc-members:
 
+Meta node embedding
+--------------------
+
+.. automodule:: karateclub.node_embedding.meta.neu
+    :members:
+    :undoc-members:
+
 Whole graph embedding
 --------------------
 
+.. automodule:: karateclub.graph_embedding.feathergraph
+    :members:
+    :undoc-members:
+
+.. automodule:: karateclub.graph_embedding.ige
+    :members:
+    :undoc-members:
+
+.. automodule:: karateclub.graph_embedding.geoscattering
+    :members:
+    :undoc-members:
+
 .. automodule:: karateclub.graph_embedding.gl2vec
+    :members:
+    :undoc-members:
+
+.. automodule:: karateclub.graph_embedding.netlsd
     :members:
     :undoc-members:
 

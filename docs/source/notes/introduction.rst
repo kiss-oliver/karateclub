@@ -4,7 +4,7 @@ Introduction by example
 *Karate Club* is an unsupervised machine learning extension library for `NetworkX <https://networkx.github.io/>`_.
 
 
-*Karate Club* consists of state-of-the-art methods to do unsupervised learning on graph structured data. To put it simply it is a Swiss Army knife for small-scale graph mining research. First, it provides network embedding techniques at the node and graph level. Second, it includes a variety of overlapping and non-overlapping community detection methods. Implemented methods cover a wide range of network science (`NetSci <https://netscisociety.net/home>`_, `CompleNet <https://complenet.weebly.com/>`_, data mining `ICDM <http://icdm2019.bigke.org/>`_, `CIKM <http://www.cikm2019.net/>`_, `KDD <https://www.kdd.org/kdd2020/>`_, artificial intelligence (`AAAI <http://www.aaai.org/Conferences/conferences.php>`_, `IJCAI <https://www.ijcai.org/>`_) and machine learning (`NeurIPS <https://nips.cc/>`_, `ICML <https://icml.cc/>`_, `ICLR <https://iclr.cc/>`_) conferences, workshops, and pieces from prominent journals.  
+*Karate Club* is an unsupervised machine learning extension library for `NetworkX <https://networkx.github.io/>`_. It builds on other open source linear algebra, machine learning, and graph signal processing libraries such as `Numpy <https://numpy.org/>`_, `Scipy <https://www.scipy.org/>`_, `Gensim <https://radimrehurek.com/gensim/>`_, `PyGSP <https://pygsp.readthedocs.io/en/stable/>`_, and `Scikit-Learn <https://scikit-learn.org/stable/>`_. *Karate Club* consists of state-of-the-art methods to do unsupervised learning on graph structured data. To put it simply it is a Swiss Army knife for small-scale graph mining research. First, it provides network embedding techniques at the node and graph level. Second, it includes a variety of overlapping and non-overlapping commmunity detection methods. Implemented methods cover a wide range of network science (`NetSci <https://netscisociety.net/home>`_, `Complenet <https://complenet.weebly.com/>`_), data mining (`ICDM <http://icdm2019.bigke.org/>`_, `CIKM <http://www.cikm2019.net/>`_, `KDD <https://www.kdd.org/kdd2020/>`_), artificial intelligence (`AAAI <http://www.aaai.org/Conferences/conferences.php>`_, `IJCAI <https://www.ijcai.org/>`_) and machine learning (`NeurIPS <https://nips.cc/>`_, `ICML <https://icml.cc/>`_, `ICLR <https://iclr.cc/>`_) conferences, workshops, and pieces from prominent journals. 
 
 --------------------------------------------------------------------------------
 
@@ -14,13 +14,13 @@ If you find *Karate Club* useful in your research, please consider citing the fo
 
 .. code-block:: latex
 
-   >@misc{rozemberczki2020karateclub,
-       title = {Karate Club: An open-source Python framework for unsupervised learning on graphs},
-       author = {Benedek Rozemberczki and Rik Sarkar},
-       year = {2020},
-       publisher = {GitHub},
-       journal = {GitHub repository},
-       howpublished = {\url{https://github.com/benedekrozemberczki/karateclub}}}
+    @inproceedings{karateclub,
+                   title = {{Karate Club: An API Oriented Open-source Python Framework for Unsupervised Learning on Graphs}},
+                   author = {Benedek Rozemberczki and Oliver Kiss and Rik Sarkar},
+                   year = {2020},
+	           booktitle = {Proceedings of the 29th ACM International Conference on Information and Knowledge Management (CIKM '20)},
+	           organization = {ACM},
+    }
 
 Overview
 =======================
@@ -36,6 +36,7 @@ Standardized dataset ingestion
 
 Karate Club assumes that the NetworkX graph provided by the user for node embedding and community detection has the following important properties:
 
+- The graph is undirected.
 - Nodes are indexed with integers.
 - There are no orphaned nodes in the graph.
 - The node indexing starts with zero and the indices are consecutive.
@@ -165,7 +166,7 @@ abusive user target vector. These are returned as a ``NetworkX`` graph and ``num
     graph = reader.get_graph()
     y = reader.get_target()
 
-We fit a `Diff2vec node embedding <http://homepages.inf.ed.ac.uk/s1668259/papers/sequence.pdf>`_, with a low number of dimensions, diffusions per source node, and short Euler walks.
+We fit a `Diff2vec node embedding <https://arxiv.org/abs/2001.07463>`_, with a low number of dimensions, diffusions per source node, and short Euler walks.
 First, we use the model constructor with custom parameters. Second, we fit the model to the graph. Third, we get the node embedding
 which is a ``numpy`` array.
 
@@ -208,7 +209,7 @@ can be of of two types - discussion and non-discussion based ones. Our goal is t
 the topological (structural) properties of the graphs. The specific dataset that we look a 10 thousand graph subsample of
 the Reddit 204K dataset which contains a large number of threads from the spring of 2018. The graphs in the dataset do not
 have a specific feature. Because of this we use the degree centrality as a string feature.
-For details about the dataset `see this paper <charnetpaper>`_.
+For details about the dataset `see this paper <https://arxiv.org/abs/2003.04819>`_.
 
 We first need to load the Reddit 10K dataset. We will use the use the graphs and the discussion/non-discussion target vector.
 These are returned as a list of ``NetworkX`` graphs and ``numpy`` array respectively.
@@ -222,15 +223,15 @@ These are returned as a list of ``NetworkX`` graphs and ``numpy`` array respecti
     graphs = reader.get_graphs()
     y = reader.get_target()
 
-We fit a Graph2Vec graph level embedding, with the standard hyperparameter settings. These are pretty widely used settings.
+We fit a FEATHER graph level embedding, with the standard hyperparameter settings. These are pretty widely used settings.
 First, we use the model constructor without custom parameters. Second, we fit the model to the graphs. Third, we get the graph embedding
 which is a ``numpy`` array.
 
 .. code-block:: python
 
-    from karateclub import Graph2Vec
+    from karateclub import FeatherGraph
 
-    model = Graph2Vec()
+    model = FeatherGraph()
     model.fit(graphs)
     X = model.get_embedding()
 
@@ -263,6 +264,8 @@ Benchmark datasets
 
 We included a number of datasets which can be used for comparing the performance of embedding and clustering algorithms. In case of node level learning these are as follows:
 
+- `European Deezer user network. <https://arxiv.org/abs/2005.07959>`_
+- `Asian LastFM user network. <https://arxiv.org/abs/2005.07959>`_
 - `Twitch user network from the UK. <https://arxiv.org/abs/1909.13021>`_
 - `Wikipedia page-page network with articles about Crocodiles. <https://arxiv.org/abs/1909.13021>`_
 - `GitHub machine learning and web developers social network. <https://arxiv.org/abs/1909.13021>`_
@@ -270,5 +273,5 @@ We included a number of datasets which can be used for comparing the performance
 
 We also added datasets for graph level embedding and graph statistical descriptors. These datasets are as follows:
 
-- `Reddit discussion and non-discussion thread graphs. <https://arxiv.org/abs/1909.13021>`_
+- `Reddit discussion and non-discussion thread graphs. <https://arxiv.org/abs/2003.04819>`_
  

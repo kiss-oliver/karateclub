@@ -1,6 +1,8 @@
 import random
 import numpy as np
 import networkx as nx
+from typing import Union
+from scipy.sparse import coo_matrix
 from karateclub.estimator import Estimator
 from gensim.models.doc2vec import TaggedDocument, Doc2Vec
 from karateclub.utils.walker import RandomWalker
@@ -15,7 +17,7 @@ class MUSAE(Estimator):
     are separable.
        
     Args:
-        walk_number (int): Number of random walks. Default is 10.
+        walk_number (int): Number of random walks. Default is 5.
         walk_length (int): Length of random walks. Default is 80.
         dimensions (int): Dimensionality of embedding. Default is 32.
         workers (int): Number of cores. Default is 4.
@@ -23,10 +25,12 @@ class MUSAE(Estimator):
         epochs (int): Number of epochs. Default is 1.
         learning_rate (float): HogWild! learning rate. Default is 0.05.
         down_sampling (float): Down sampling rate in the corpus. Default is 0.0001.
-        min_count (int): Minimal count of node occurences. Default is 1.
+        min_count (int): Minimal count of node occurrences. Default is 1.
+        seed (int): Random seed value. Default is 42.
     """
     def __init__(self, walk_number=5, walk_length=80, dimensions=32, workers=4,
-                 window_size=3, epochs=5, learning_rate=0.05, down_sampling=0.0001, min_count=1):
+                 window_size=3, epochs=5, learning_rate=0.05, down_sampling=0.0001,
+                 min_count=1, seed=42):
 
         self.walk_number = walk_number
         self.walk_length = walk_length
@@ -37,6 +41,7 @@ class MUSAE(Estimator):
         self.learning_rate = learning_rate
         self.down_sampling = down_sampling
         self.min_count = min_count
+        self.seed = seed
 
 
     def _feature_transform(self, graph, X):
@@ -56,7 +61,8 @@ class MUSAE(Estimator):
                         dm=0,
                         sample=self.down_sampling,
                         workers=self.workers,
-                        epochs=self.epochs)
+                        epochs=self.epochs,
+                        seed=self.seed)
 
         emb = np.array([model.docvecs[str(n)] for n in range(self.graph.number_of_nodes())])
         return emb
@@ -68,7 +74,7 @@ class MUSAE(Estimator):
 
     def _setup_musae_features(self, approximation):
         features = {str(node): [] for node in self.graph.nodes()}
-        for walk in self.walker.walks:
+        for walk in self._walker.walks:
             for i in range(len(walk)-approximation):
                 source = walk[i]
                 target = walk[i+approximation]
@@ -89,7 +95,7 @@ class MUSAE(Estimator):
         features_out = [TaggedDocument(words=[str(feature) for feature in features], tags = [str(node)]) for node, features in self.features.items()]
         return features_out 
 
-    def fit(self, graph, X):
+    def fit(self, graph: nx.classes.graph.Graph, X: Union[np.array, coo_matrix]):
         """
         Fitting a MUSAE model.
 
@@ -97,15 +103,17 @@ class MUSAE(Estimator):
             * **graph** *(NetworkX graph)* - The graph to be embedded.
             * **X** *(Scipy COO array)* - The binary matrix of node features.
         """
+        self._set_seed()
+        self._check_graph(graph)
         self.graph = graph
-        self.walker = RandomWalker(self.walk_length, self.walk_number)
-        self.walker.do_walks(graph)
+        self._walker = RandomWalker(self.walk_length, self.walk_number)
+        self._walker.do_walks(graph)
         self.features = self._feature_transform(graph, X)
-        self.base_docs = self._create_base_docs()
-        self.embeddings = [self._create_single_embedding(self.base_docs)]
+        self._base_docs = self._create_base_docs()
+        self.embeddings = [self._create_single_embedding(self._base_docs)]
         self._learn_musae_embedding()
 
-    def get_embedding(self):
+    def get_embedding(self) -> np.array:
         r"""Getting the node embedding.
 
         Return types:

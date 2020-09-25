@@ -1,6 +1,8 @@
 import numpy as np
 import networkx as nx
+from typing import Union
 from numpy.linalg import inv
+from scipy.sparse import coo_matrix
 from sklearn.decomposition import TruncatedSVD
 from karateclub.estimator import Estimator
 
@@ -17,15 +19,18 @@ class BANE(Estimator):
         alpha (float): Kernel matrix inversion parameter. Default is 0.3. 
         iterations (int): Matrix decomposition iterations. Default is 100.
         binarization_iterations (int): Binarization iterations. Default is 20.
+        seed (int): Random seed value. Default is 42.
     """
-    def __init__(self, dimensions=32, svd_iterations=20, seed=42, alpha=0.3,
-                 iterations=100, binarization_iterations=20):
+    def __init__(self, dimensions: int=32, svd_iterations: int=20, seed: int=42,
+                 alpha: float=0.3, iterations: int=100, binarization_iterations: int=20):
+
         self.dimensions = dimensions
         self.svd_iterations = svd_iterations
         self.seed = seed
         self.alpha = alpha
         self.iterations = iterations
         self.binarization_iterations = binarization_iterations
+        self.seed = seed
 
     def _create_target_matrix(self, graph):
         """
@@ -45,7 +50,7 @@ class BANE(Estimator):
                                 nodelist=range(graph.number_of_nodes()))
         return P
 
-    def fit(self, graph, X):
+    def fit(self, graph: nx.classes.graph.Graph, X: Union[np.array, coo_matrix]):
         """
         Fitting a BANE model.
 
@@ -53,8 +58,10 @@ class BANE(Estimator):
             * **graph** *(NetworkX graph)* - The graph to be embedded.
             * **X** *(Scipy COO or Numpy array)* - The matrix of node features.
         """
-        self.P = self._create_target_matrix(graph)
-        self.X = X
+        self._set_seed()
+        self._check_graph(graph)
+        self._P = self._create_target_matrix(graph)
+        self._X = X
         self._fit_base_SVD_model()
         self._binary_optimize()
 
@@ -62,28 +69,28 @@ class BANE(Estimator):
         """
         Reducing the dimensionality with SVD in the 1st step.
         """
-        self.P = self.P.dot(self.X)
+        self._P = self._P.dot(self._X)
         self.model = TruncatedSVD(n_components=self.dimensions,
                                   n_iter=self.svd_iterations,
                                   random_state=self.seed)
 
-        self.model.fit(self.P)
-        self.P = self.model.fit_transform(self.P)
+        self.model.fit(self._P)
+        self._P = self.model.fit_transform(self._P)
 
     def _update_G(self):
         """
         Updating the kernel matrix.
         """
-        self.G = np.dot(self.B.transpose(), self.B)
-        self.G = self.G + self.alpha*np.eye(self.dimensions)
-        self.G = inv(self.G)
-        self.G = self.G.dot(self.B.transpose()).dot(self.P)
+        self._G = np.dot(self._B.transpose(), self._B)
+        self._G = self._G + self.alpha*np.eye(self.dimensions)
+        self._G = inv(self._G)
+        self._G = self._G.dot(self._B.transpose()).dot(self._P)
 
     def _update_Q(self):
         """
         Updating the rescaled target matrix.
         """
-        self.Q = self.G.dot(self.P.transpose()).transpose()
+        self._Q = self._G.dot(self._P.transpose()).transpose()
 
     def _update_B(self):
         """
@@ -92,24 +99,24 @@ class BANE(Estimator):
         for _ in range(self.iterations):
             for d in range(self.dimensions):
                 sel = [x for x in range(self.dimensions) if x != d]
-                self.B[:, d] = self.Q[:, d]-self.B[:, sel].dot(self.G[sel, :]).dot(self.G[:, d]).transpose()
-                self.B[:, d] = np.sign(self.B[:, d])
+                self._B[:, d] = self._Q[:, d]-self._B[:, sel].dot(self._G[sel, :]).dot(self._G[:, d]).transpose()
+                self._B[:, d] = np.sign(self._B[:, d])
 
     def _binary_optimize(self):
         """
         Starting 2nd optimization phase with power iterations and CCD.
         """
-        self.B = np.sign(np.random.normal(size=(self.P.shape[0], self.dimensions)))
+        self._B = np.sign(np.random.normal(size=(self._P.shape[0], self.dimensions)))
         for _ in range(self.binarization_iterations):
             self._update_G()
             self._update_Q()
             self._update_B()
 
-    def get_embedding(self):
+    def get_embedding(self) -> np.array:
         r"""Getting the node embedding.
 
         Return types:
             * **embedding** *(Numpy array)* - The embedding of nodes.
         """
-        embedding = self.B
+        embedding = self._B
         return embedding

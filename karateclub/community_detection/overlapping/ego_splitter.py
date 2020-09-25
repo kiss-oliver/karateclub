@@ -1,5 +1,6 @@
 import community
 import networkx as nx
+from typing import Dict, Optional
 from karateclub.estimator import Estimator
 
 class EgoNetSplitter(Estimator):
@@ -10,9 +11,13 @@ class EgoNetSplitter(Estimator):
 
     Args:
         resolution (float): Resolution parameter of Python Louvain. Default 1.0.
+        seed (int): Random seed value. Default is 42.
+        weight (str): the key in the graph to use as weight. Default to 'weight'. Specify None to force using an unweighted version of the graph.
     """
-    def __init__(self, resolution=1.0):
+    def __init__(self, resolution: float=1.0, seed: int=42, weight: Optional[str]='weight'):
         self.resolution = resolution
+        self.seed = seed
+        self.weight = weight
 
     def _create_egonet(self, node):
         """
@@ -56,38 +61,50 @@ class EgoNetSplitter(Estimator):
         Arg types:
             * **edge** *(list of ints)* - Edge being mapped to the new identifiers.
         """
-        return (self.components[edge[0]][edge[1]], self.components[edge[1]][edge[0]])
+        if self.weight is None or edge[2] is None:
+            return (self.components[edge[0]][edge[1]], self.components[edge[1]][edge[0]])
+        else:
+            return (self.components[edge[0]][edge[1]], self.components[edge[1]][edge[0]], {self.weight: edge[2]})
 
     def _create_persona_graph(self):
         """
         Create a persona graph using the ego-net components.
         """
-        self.persona_graph_edges = [self._get_new_edge_ids(edge) for edge in self.graph.edges()]
+        if self.weight is None:
+            self.persona_graph_edges = [self._get_new_edge_ids(edge) for edge in self.graph.edges()]
+        else:
+            self.persona_graph_edges = [self._get_new_edge_ids(edge) for edge in self.graph.edges(data=self.weight)]
+
         self.persona_graph = nx.from_edgelist(self.persona_graph_edges)
 
     def _create_partitions(self):
         """
         Creating a non-overlapping clustering of nodes in the persona graph.
         """
-        self.partitions = community.best_partition(self.persona_graph, resolution=self.resolution)
+        if self.weight is None:
+            self.partitions = community.best_partition(self.persona_graph, resolution=self.resolution)
+        else:
+            self.partitions = community.best_partition(self.persona_graph, resolution=self.resolution, weight=self.weight)
         self.overlapping_partitions = {node: [] for node in self.graph.nodes()}
         for node, membership in self.partitions.items():
             self.overlapping_partitions[self.personality_map[node]].append(membership)
 
-    def fit(self, graph):
+    def fit(self, graph: nx.classes.graph.Graph):
         """
         Fitting an Ego-Splitter clustering model.
 
         Arg types:
             * **graph** *(NetworkX graph)* - The graph to be clustered.
         """
+        self._set_seed()
+        self._check_graph(graph)
         self.graph = graph
         self._create_egonets()
         self._map_personalities()
         self._create_persona_graph()
         self._create_partitions()
 
-    def get_memberships(self):
+    def get_memberships(self) -> Dict[int, int]:
         r"""Getting the cluster membership of nodes.
 
         Return types:

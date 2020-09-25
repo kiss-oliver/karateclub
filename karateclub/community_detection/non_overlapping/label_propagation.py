@@ -1,5 +1,6 @@
 import random
 import networkx as nx
+from typing import Dict
 from karateclub.estimator import Estimator
 
 class LabelPropagation(Estimator):
@@ -12,7 +13,7 @@ class LabelPropagation(Estimator):
         seed (int): Random seed. Default is 42.
         iterations (int): Propagation iterations. Default is 100.
     """
-    def __init__(self, seed=42, iterations=100):
+    def __init__(self, seed: int=42, iterations: int=100):
         self.seed = seed
         self.iterations = iterations
 
@@ -25,7 +26,7 @@ class LabelPropagation(Estimator):
         """
         scores = {}
         for neighbor in neighbors:
-            neighbor_label = self.labels[neighbor]
+            neighbor_label = self._labels[neighbor]
             if neighbor_label in scores.keys():
                 scores[neighbor_label] = scores[neighbor_label] + 1
             else:
@@ -37,33 +38,35 @@ class LabelPropagation(Estimator):
         """
         Doing a propagation round.
         """
-        random.shuffle(self.nodes)
+        random.shuffle(self._nodes)
         new_labels = {}
-        for node in self.nodes:
-            neighbors = [neb for neb in nx.neighbors(self.graph, node)]
+        for node in self._nodes:
+            neighbors = [neb for neb in nx.neighbors(self._graph, node)]
             pick = self._make_a_pick(neighbors)
             new_labels[node] = pick
-        self.labels = new_labels
+        self._labels = new_labels
 
-    def fit(self, graph):
+    def fit(self, graph: nx.classes.graph.Graph):
         """
         Fitting a Label Propagation clustering model.
 
         Arg types:
             * **graph** *(NetworkX graph)* - The graph to be clustered.
         """
-        self.graph = graph
-        self.nodes = [node for node in self.graph.nodes()]
-        self.labels = {node: i for i, node in enumerate(self.graph.nodes())}
+        self._set_seed()
+        self._check_graph(graph)
+        self._graph = graph
+        self._nodes = [node for node in self._graph.nodes()]
+        self._labels = {node: i for i, node in enumerate(self._graph.nodes())}
         random.seed(self.seed)
         for _ in range(self.iterations):
             self._do_a_propagation()
 
-    def get_memberships(self):
+    def get_memberships(self) -> Dict[int, int]:
         r"""Getting the cluster membership of nodes.
 
         Return types:
             * **memberships** *(dict)* - Node cluster memberships.
         """
-        memberships = self.labels
+        memberships = self._labels
         return memberships

@@ -22,11 +22,14 @@ class Role2Vec(Estimator):
         epochs (int): Number of epochs. Default is 1.
         learning_rate (float): HogWild! learning rate. Default is 0.05.
         down_sampling (float): Down sampling frequency. Default is 0.0001.
-        min_count (int): Minimal count of feature occurences. Default is 10.
+        min_count (int): Minimal count of feature occurrences. Default is 10.
         wl_iterations (int): Number of Weisfeiler-Lehman hashing iterations. Default is 2.
+        seed (int): Random seed value. Default is 42.
+        erase_base_features (bool): Removing the base features. Default is False.
     """
-    def __init__(self, walk_number=10, walk_length=80, dimensions=128, workers=4, window_size=2,
-                 epochs=1, learning_rate=0.05, down_sampling=0.0001, min_count=10, wl_iterations=2):
+    def __init__(self, walk_number: int=10, walk_length: int=80, dimensions: int=128, workers: int=4,
+                 window_size: int=2, epochs: int=1, learning_rate: float=0.05, down_sampling: float=0.0001,
+                 min_count: int=10, wl_iterations: int=2, seed: int=42, erase_base_features: bool=False):
 
         self.walk_number = walk_number
         self.walk_length = walk_length
@@ -38,6 +41,8 @@ class Role2Vec(Estimator):
         self.down_sampling = down_sampling
         self.min_count = min_count
         self.wl_iterations = wl_iterations
+        self.seed = seed
+        self.erase_base_features = erase_base_features
 
     def _transform_walks(self, walks):
         """
@@ -76,17 +81,22 @@ class Role2Vec(Estimator):
         return new_features
 
 
-    def fit(self, graph):
+    def fit(self, graph: nx.classes.graph.Graph):
         """
         Fitting a Role2vec model.
 
         Arg types:
             * **graph** *(NetworkX graph)* - The graph to be embedded.
         """
-        walker = RandomWalker(self.walk_length,self.walk_number)
+        self._set_seed()
+        self._check_graph(graph)
+        walker = RandomWalker(self.walk_length, self.walk_number)
         walker.do_walks(graph)
  
-        hasher = WeisfeilerLehmanHashing(graph=graph, wl_iterations=self.wl_iterations, attributed=False)
+        hasher = WeisfeilerLehmanHashing(graph=graph,
+                                         wl_iterations=self.wl_iterations,
+                                         attributed=False,
+                                         erase_base_features=self.erase_base_features)
       
         node_features = hasher.get_node_features()
         documents = self._create_documents(walker.walks, node_features)
@@ -99,11 +109,12 @@ class Role2Vec(Estimator):
                         workers=self.workers,
                         sample=self.down_sampling,
                         epochs=self.epochs,
-                        alpha=self.learning_rate)
+                        alpha=self.learning_rate,
+                        seed=self.seed)
 
         self._embedding = [model.docvecs[str(i)] for i, _ in enumerate(documents)]
 
-    def get_embedding(self):
+    def get_embedding(self) -> np.array:
         r"""Getting the node embedding.
 
         Return types:

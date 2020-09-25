@@ -4,6 +4,7 @@ import json
 import numpy as np
 import pandas as pd
 import networkx as nx
+from typing import List
 from six.moves import urllib
 from scipy.sparse import coo_matrix
 
@@ -12,9 +13,11 @@ class GraphReader(object):
     r"""Class to read benchmark datasets for the community detection or node embedding task.
 
     Args:
-        dataset (str): Dataset of interest  on of facebook/wikipedia/github/twitch. Default is 'wikipedia'.
+        dataset (str): Dataset of interest, one of: 
+            (:obj:`"facebook"`, :obj:`"twitch"`, :obj:`"wikipedia"`, :obj:`"github"`, :obj:`"lastfm"`,:obj:`"deezer"`). Default is 'wikipedia'.
     """
-    def __init__(self, dataset="wikipedia"):
+    def __init__(self, dataset: str="wikipedia"):
+        assert dataset in ["wikipedia", "twitch", "github", "facebook", "lastfm", "deezer"], "Wrong dataset."
         self.dataset = dataset
         self.base_url = "https://github.com/benedekrozemberczki/karateclub/raw/master/dataset/node_level/"
 
@@ -32,12 +35,12 @@ class GraphReader(object):
         """
         Reading the dataset from the web.
         """
-        path = os.path.join(self.base_url, self.dataset, end)
+        path = self.base_url + self.dataset + "/" + end
         data = urllib.request.urlopen(path).read()
         data = self._pandas_reader(data)
         return data
    
-    def get_graph(self):
+    def get_graph(self) -> nx.classes.graph.Graph:
         r"""Getting the graph.
 
         Return types:
@@ -47,7 +50,7 @@ class GraphReader(object):
         graph = nx.convert_matrix.from_pandas_edgelist(data, "id_1", "id_2")
         return graph
 
-    def get_features(self):
+    def get_features(self) -> coo_matrix:
         r"""Getting the node features Scipy matrix.
 
         Return types:
@@ -63,7 +66,7 @@ class GraphReader(object):
         features = coo_matrix((values, (row, col)), shape=shape)
         return features
 
-    def get_target(self):
+    def get_target(self) -> np.array:
         r"""Getting the class membership of nodes.
 
         Return types:
@@ -79,7 +82,7 @@ class GraphSetReader(object):
     Args:
         dataset (str): Dataset of interest one of reddit10k. Default is 'reddit10k'.
     """
-    def __init__(self, dataset="reddit10k"):
+    def __init__(self, dataset: str="reddit10k"):
         self.dataset = dataset
         self.base_url = "https://github.com/benedekrozemberczki/karateclub/raw/master/dataset/graph_level/"
 
@@ -97,11 +100,11 @@ class GraphSetReader(object):
         """
         Reading the dataset from the web.
         """
-        path = os.path.join(self.base_url, self.dataset, end)
+        path = self.base_url + self.dataset + "/" + end
         data = urllib.request.urlopen(path).read()
         return data
 
-    def get_graphs(self):
+    def get_graphs(self) -> List[nx.classes.graph.Graph]:
         r"""Getting the graphs.
 
         Return types:
@@ -112,7 +115,7 @@ class GraphSetReader(object):
         graphs = [nx.from_edgelist(graphs[str(i)]) for i in range(len(graphs))]
         return graphs
 
-    def get_target(self):
+    def get_target(self) -> np.array:
         r"""Getting the class membership of graphs.
 
         Return types:

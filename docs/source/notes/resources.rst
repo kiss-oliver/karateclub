@@ -12,12 +12,14 @@ Overlapping community detection
 
 * Bing-Jie Sun, Huawei Shen, Jinhua Gao, Wentao Ouyang, Xueqi Cheng: **A Non-negative Symmetric Encoder-Decoder Approach for Community Detection** `Paper <http://www.bigdatalab.ac.cn/~shenhuawei/publications/2017/cikm-sun.pdf>`_
 
-* Jaewon Yang and Jure Leskovec: **Overlapping Community Detection at Scale: A Nonnegative Matrix Factorization Approach** `Paper <http://infolab.stanford.edu/~crucis/pubs/paper-nmfagm.pdf>`_, `Slides <http://snap.stanford.edu/class/cs224w-2017/slides/18-overlapping.pdf>`_, `Video <https://www.youtube.com/watch?v=Y78Kugdq24I>`_, `Video <https://www.youtube.com/watch?v=cuDDBfvK71g>`_
+* Jaewon Yang and Jure Leskovec: **Overlapping Community Detection at Scale:  A Nonnegative Matrix Factorization Approach** `Paper <http://infolab.stanford.edu/~crucis/pubs/paper-nmfagm.pdf>`_, `Slides <http://snap.stanford.edu/class/cs224w-2017/slides/18-overlapping.pdf>`_, `Video <https://www.youtube.com/watch?v=Y78Kugdq24I>`_, `Video <https://www.youtube.com/watch?v=cuDDBfvK71g>`_
 
 * Da Kuang, Chris Ding, Haesun Park: **Symmetric Nonnegative Matrix Factorization for Graph Clustering** `Paper <https://www.cc.gatech.edu/~hpark/papers/DaDingParkSDM12.pdf>`_
 
 Non-overlapping community detection
 --------------------
+
+*  Benedek Rozemberczki, Ryan Davies, Rik Sarkar, and Charles Sutton: **GEMSEC: Graph Embedding with Self Clustering** `Paper <https://arxiv.org/abs/1802.03997>`_, `Code <https://github.com/benedekrozemberczki/GEMSEC>`_
 
 * Pei-Zhen Li, Ling Huang, Chang-Dong Wang, and Jian-Huang Lai: **EdMot: An Edge Enhancement Approach for Motif-aware Community Detection** `Paper <https://arxiv.org/abs/1906.04560>`_, `Video <https://www.youtube.com/watch?v=6fEGMHJSsq0>`_, `Code <https://github.com/benedekrozemberczki/EdMot>`_
 
@@ -30,17 +32,25 @@ Neighbourhood-based node embedding
 
 * Jundong Li, Liang Wu, and Huan Liu: **Multi-Level Network Embedding with Boosted Low-Rank Matrix Approximation** `Paper <https://arxiv.org/abs/1808.08627>`_
 
+* Dingqi Yang, Paolo Rosso, Bin Li, and Philippe Cudre-Mauroux: **NodeSketch: Highly-Efficient Graph Embeddingsvia Recursive Sketching** `Paper <https://exascale.info/assets/pdf/yang2019nodesketch.pdf>`_
+
 * Jiezhong Qiu, Yuxiao Dong, Hao Ma, Jian Li, Kuansan Wang, and Jie Tang: **Network Embedding as Matrix Factorization: Unifying DeepWalk, LINE, PTE, and Node2Vec** `Paper <https://keg.cs.tsinghua.edu.cn/jietang/publications/WSDM18-Qiu-et-al-NetMF-network-embedding.pdf>`_
 
 * Benedek Rozemberczki and Rik Sarkar: **Fast Sequence Based Embedding with Diffusion Graphs** `Paper <https://arxiv.org/abs/2001.07463>`_, `Code <https://github.com/benedekrozemberczki/diff2vec>`_
 
 * Bryan Perozzi, Vivek Kulkarni, Haochen Chen, Steven Skiena: **Don't Walk, Skip! Online Learning of Multi-scale Network Embeddings** `Paper <https://arxiv.org/abs/1605.02115>`_, `Code <https://github.com/benedekrozemberczki/walklets>`_
 
+* Mingdong Ou, Peng  Cui, Jian  Pei, Ziwei  Zhang, Wenwu Zhu: **Asymmetric Transitivity Preserving Graph Embedding** `Paper <https://dl.acm.org/doi/abs/10.1145/2939672.2939751>`_
+
 * Shaosheng Cao, Wei Lu, Qiongkai Xu: **GraRep: Learning Graph Representations with Global Structural Information** `Paper <https://dl.acm.org/citation.cfm?id=2806512>`_, `Code <https://github.com/benedekrozemberczki/GraRep>`_
+
+* Aditya Grover and Jure Leskovec: **Node2Vec: Scalable Feature Learning for Networks** `Paper <https://cs.stanford.edu/~jure/pubs/node2vec-kdd16.pdf>`_, `Video <https://www.youtube.com/watch?v=1_QH5BEP5BM>`_
 
 * Bryan Perozzi, Rami Al-Rfou, Steven Skiena: **DeepWalk: Online Learning of Social Representations** `Paper <https://arxiv.org/abs/1403.6652>`_, `Slides <https://www.slideshare.net/bperz/14-kdddeep-walk-2>`_, `Video <https://www.youtube.com/watch?v=n12HS-24CtA>`_, `Video <https://www.youtube.com/watch?v=aZNtHJwfIVg>`_
 
 * Dennis L. Sun and Cédric Févotte: **Alternating Direction Method of Multipliers for Non-Negative Matrix Factorization with the Beta-Divergence** `Paper <http://statweb.stanford.edu/~dlsun/papers/nmf_admm.pdf>`_, `Code <https://github.com/benedekrozemberczki/NMFADMM>`_
+
+* Mikhail Belkin and Partha Niyogi: **Laplacian Eigenmaps and Spectral Techniques for Embedding and Clustering** `Paper <http://papers.nips.cc/paper/1961-laplacian-eigenmaps-and-spectral-techniques-for-embedding-and-clustering.pdf>`_, `Video <https://www.youtube.com/watch?v=U31TIICsHiA>`_
 
 Structural node embedding
 --------------------
@@ -51,6 +61,8 @@ Structural node embedding
 
 Attributed node embedding
 --------------------
+
+* Benedek Rozemberczki, Rik Sarkar: **Characteristic Functions on Graphs: Birds of a Feather, from Statistical Descriptors to Parametric Models** `Paper <https://arxiv.org/abs/2005.07959>`_, `Code <https://github.com/benedekrozemberczki/FEATHER>`_
 
 * Benedek Rozemberczki, Carl Allen, Rik Sarkar: **Multi-Scale Attributed Node Embedding** `Paper <https://arxiv.org/abs/1909.13021>`_, `Code <https://github.com/benedekrozemberczki/MUSAE>`_
 
@@ -64,10 +76,23 @@ Attributed node embedding
 
 * Sambaran Bandyopadhyay, Harsh Kara, Aswin Kannan, M N Murty: **Fusing Structure and Content via Non-negative Matrix Factorization for Embedding Information Networks** `Paper <https://arxiv.org/pdf/1804.05313.pdf>`_, `Code <https://github.com/benedekrozemberczki/FSCNMF>`_
 
+Meta node embedding
+--------------------
+
+* Cheng Yang, Maosong Sun, Zhiyuan Liu, Cunchao Tu: **Fast Network Embedding Enhancement via High Order Proximity Approximation** `Paper <https://www.ijcai.org/Proceedings/2017/0544.pdf>`_
+
 Whole graph embedding
 --------------------
 
+* Benedek Rozemberczki, Rik Sarkar: **Characteristic Functions on Graphs: Birds of a Feather, from Statistical Descriptors to Parametric Models** `Paper <https://arxiv.org/abs/2005.07959>`_, `Code <https://github.com/benedekrozemberczki/FEATHER>`_
+
+* Alexis Galland, Marc Lelarge: **Invariant Embedding for Graph Classification** `Paper <https://graphreason.github.io/papers/16.pdf>`_, `Code <https://github.com/agalland/invariant_embedding>`_
+
+* Feng Gao, Guy Wolf, Matthew Hirn: **Geometric Scattering for Graph Data Analysis** `Paper <http://proceedings.mlr.press/v97/gao19e.html>`_
+
 * Hong Chen, Hisashi Koga: **GL2Vec: Graph Embedding Enriched by Line Graphs with Edge Features** `Paper <https://link.springer.com/chapter/10.1007/978-3-030-36718-3_1>`_
+
+* Anton Tsitsulin, Davide Mottin, Panagiotis Karras, Alex Bronstein, Emmanuel Müller: **NetLSD: Hearing the Shape of a Graph** `Paper <https://arxiv.org/abs/1805.10712>`_, `Video <https://www.youtube.com/watch?v=aiPOa1NTgvM>`_
 
 * Nathan de Lara, Edouard Pineau: **A Simple Baseline Algorithm for Graph Classification** `Paper <https://arxiv.org/abs/1810.09155>`_
 

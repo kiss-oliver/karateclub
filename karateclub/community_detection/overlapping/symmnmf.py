@@ -1,5 +1,6 @@
 import numpy as np
 import networkx as nx
+from typing import Dict
 from scipy import sparse
 from karateclub.estimator import Estimator
 
@@ -14,13 +15,15 @@ class SymmNMF(Estimator):
     Args:
         dimensions (int): Number of dimensions. Default is 32.
         iterations (int): Number of power iterations. Default is 200.
-        rho (float): ADMM tuning parameter. Default is 100.0.
+        rho (float): Regularization tuning parameter. Default is 100.0.
+        seed (int): Random seed value. Default is 42.
     """
-    def __init__(self, dimensions=32, iterations=200, rho=100.0):
+    def __init__(self, dimensions: int=32, iterations: int=200, rho: float=100.0, seed: int=42):
 
         self.dimensions = dimensions
         self.iterations = iterations
         self.rho = rho
+        self.seed = seed
 
     def _create_D_inverse(self, graph):
         """
@@ -59,27 +62,27 @@ class SymmNMF(Estimator):
         """
         number_of_nodes = graph.shape[0]
         non_zero = graph.nonzero()[0].shape[0]
-        self.H = np.random.uniform(0, non_zero/(number_of_nodes**2), size=(number_of_nodes, self.dimensions))
-        self.H_gamma = np.zeros((number_of_nodes, self.dimensions))
-        self.I = np.identity(self.dimensions)
+        self._H = np.random.uniform(0, non_zero/(number_of_nodes**2), size=(number_of_nodes, self.dimensions))
+        self._H_gamma = np.zeros((number_of_nodes, self.dimensions))
+        self._I = np.identity(self.dimensions)
 
-    def get_memberships(self):
+    def get_memberships(self) -> Dict[int, int]:
         r"""Getting the cluster membership of nodes.
 
         Return types:
             * **memberships** *(dict)* - Node cluster memberships.
         """
-        index = np.argmax(self.W, axis=1)
+        index = np.argmax(self._W, axis=1)
         memberships = {int(i): int(index[i]) for i in range(len(index))}
         return memberships
 
-    def get_embedding(self):
+    def get_embedding(self) -> np.array:
         r"""Getting the node embedding.
 
         Return types:
             * **embedding** *(Numpy array)* - The embedding of nodes.
         """
-        embedding = self.H
+        embedding = self._H
         return embedding
 
     def _do_admm_update(self, A_hat):
@@ -87,21 +90,23 @@ class SymmNMF(Estimator):
         Doing a single ADMM update with the adjacency matrix.
         
         """
-        H_covar = np.linalg.inv(self.H.T.dot(self.H) + self.rho*self.I)
-        self.W = (A_hat.dot(A_hat.T.dot(self.H)) + self.rho*self.H - self.H_gamma).dot(H_covar)
-        self.W = np.maximum(self.W, 0)
-        W_covar = np.linalg.inv(self.W.T.dot(self.W) + self.rho*self.I)
-        self.H = (A_hat.dot(A_hat.T.dot(self.W)) + self.rho*self.W + self.H_gamma).dot(W_covar)
-        self.H = np.maximum(self.H, 0)
-        self.H_gamma = self.H_gamma + self.rho*(self.W-self.H)
+        H_covar = np.linalg.inv(self._H.T.dot(self._H) + self.rho*self._I)
+        self._W = (A_hat.dot(A_hat.T.dot(self._H)) + self.rho*self._H - self._H_gamma).dot(H_covar)
+        self._W = np.maximum(self._W, 0)
+        W_covar = np.linalg.inv(self._W.T.dot(self._W) + self.rho*self._I)
+        self._H = (A_hat.dot(A_hat.T.dot(self._W)) + self.rho*self._W + self._H_gamma).dot(W_covar)
+        self._H = np.maximum(self._H, 0)
+        self._H_gamma = self._H_gamma + self.rho*(self._W-self._H)
 
-    def fit(self, graph):
+    def fit(self, graph: nx.classes.graph.Graph):
         """
         Fitting a Symm-NMF clustering model.
 
         Arg types:
             * **graph** *(NetworkX graph)* - The graph to be clustered.
         """
+        self._set_seed()
+        self._check_graph(graph)
         graph.remove_edges_from(nx.selfloop_edges(graph))
         A_hat = self._create_base_matrix(graph)
         self._setup_embeddings(A_hat)
